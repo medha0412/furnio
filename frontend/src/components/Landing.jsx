@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, User, Heart, ShoppingCart, Share2, RotateCcw, Eye, ChevronLeft, ChevronRight, Star, Minus, Plus, Facebook, Linkedin, Twitter } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
+import { useLikes } from '../contexts/LikesContext';
 import { fetchProducts, createProduct, updateProduct, deleteProduct, seedProducts } from '../api/products';
 import ProductFormModal from './ProductFormModal';
 import ConfirmDeleteModal from './ConfirmDeleteModal';
@@ -309,6 +310,8 @@ Weighing in under 7 pounds, the Kilburn is a lightweight piece of vintage styled
 
 const FurniroEcommerce = () => {
   const { addToCart } = useCart();
+  const { toggleLike } = useLikes();
+  const [showMoreMultiplier, setShowMoreMultiplier] = useState(1);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [hoveredProduct, setHoveredProduct] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -735,7 +738,7 @@ const FurniroEcommerce = () => {
         {/* Background Image */}
         <div className="absolute inset-0 z-0 pointer-events-none">
           <img 
-            src="/images/Mask Group.jpg" 
+            src="/images/landing.jpeg" 
             alt="Hero Background" 
             className="w-full h-full object-cover"
           />
@@ -860,9 +863,9 @@ const FurniroEcommerce = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {(items.length ? items : products).map((product) => (
+            {Array.from({ length: showMoreMultiplier }).flatMap(() => (items.length ? items : products)).map((product, idx) => (
               <div
-                key={product._id || product.id}
+                key={(product._id || product.id) + '-' + idx}
                 className="group relative bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
                 onMouseEnter={() => setHoveredProduct(product._id || product.id)}
                 onMouseLeave={() => setHoveredProduct(null)}
@@ -900,18 +903,18 @@ const FurniroEcommerce = () => {
                         Add to cart
                       </button>
                       <div className="flex items-center justify-center space-x-6 text-white mb-4">
-                        <span className="flex items-center space-x-2">
+                        <button onClick={(e)=>{e.stopPropagation(); addToCart(product);}} className="flex items-center space-x-2">
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
                           <span className="text-sm">Share</span>
-                        </span>
-                        <span className="flex items-center space-x-2">
+                        </button>
+                        <button onClick={(e)=>{e.stopPropagation(); addToCart(product);}} className="flex items-center space-x-2">
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12h18"/><path d="M8 8l-4 4 4 4"/><path d="M16 16l4-4-4-4"/></svg>
                           <span className="text-sm">Compare</span>
-                        </span>
-                        <span className="flex items-center space-x-2">
+                        </button>
+                        <button onClick={(e)=>{e.stopPropagation(); toggleLike(product);}} className="flex items-center space-x-2">
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>
                           <span className="text-sm">Like</span>
-                        </span>
+                        </button>
                       </div>
                       <div className="absolute top-3 right-3 flex space-x-3 text-white text-sm">
                         <button onClick={(e) => { e.stopPropagation(); setEditingProduct(product); setIsFormOpen(true); }} title="Edit" className="bg-black/50 rounded p-1 hover:text-yellow-300">✏️</button>
@@ -937,7 +940,7 @@ const FurniroEcommerce = () => {
           </div>
           
           <div className="text-center mt-8">
-            <button className="border-2 border-yellow-600 text-yellow-600 px-8 py-3 rounded hover:bg-yellow-600 hover:text-white transition-colors">
+            <button onClick={()=> setShowMoreMultiplier(m => m + 1)} className="border-2 border-yellow-600 text-yellow-600 px-8 py-3 rounded hover:bg-yellow-600 hover:text-white transition-colors">
               Show More
             </button>
           </div>

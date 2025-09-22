@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
+import { useLikes } from '../contexts/LikesContext';
 
 const Header = () => {
   const { toggleCart, getTotalItems } = useCart();
+  const { toggleOpen: toggleLikes, getTotalLikes } = useLikes();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
@@ -60,9 +62,14 @@ const Header = () => {
           <a href="#" className="text-gray-800 hover:text-yellow-600 transition-colors duration-200">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
           </a>
-          <a href="#" className="text-gray-800 hover:text-yellow-600 transition-colors duration-200">
+          <button onClick={toggleLikes} className="relative text-gray-800 hover:text-yellow-600 transition-colors duration-200">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-          </a>
+            {getTotalLikes() > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
+                {getTotalLikes()}
+              </span>
+            )}
+          </button>
           <button 
             onClick={toggleCart}
             className="relative text-gray-800 hover:text-yellow-600 transition-colors duration-200"
