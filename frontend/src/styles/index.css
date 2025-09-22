@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Test styles to verify Tailwind is working */
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Custom utility classes */
+.test-tailwind {
+  @apply bg-blue-500 text-white p-4 rounded;
+}
