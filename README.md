@@ -1,121 +1,90 @@
-Furniro – Fullstack E-Commerce Assignment
 
-A full-stack e-commerce application (Furniture Store) built with React + Vite (frontend) and Node.js + Express + MongoDB (backend).
-🚀 **Live Demo:** [Frontend on Netlify](https://furniro4.netlify.app/)
-⚙️ **API Endpoint:** [Backend on Render](https://furnio-he77.onrender.com)
+# Furniro – Full‑Stack Furniture E‑commerce
 
-📖 Contents
+Modern, responsive furniture store built with React + Vite and Node.js + Express + MongoDB. It supports full product CRUD, server‑side filtering/sorting/pagination, a persistent cart, product comparison, likes, and polished UI with Tailwind CSS.
 
-Overview
+Live Demo (Frontend): https://furniro4.netlify.app/
+Backend API (Render): https://furnio-he77.onrender.com/
 
-Tech Stack
+## Contents
+- Overview
+- Live URLs
+- Features
+- Tech Stack
+- Architecture
+- Quick Start (Local)
+- Configuration (Environment variables)
+- Scripts
+- API Overview + Examples
+- Data Model
+- Seeding Products
+- Frontend Usage Guide
+- Deployment (Render + Netlify)
+- Troubleshooting & FAQ
+- Project Structure
 
-Features
+---
 
-Quick Start
+## Overview
+Furniro delivers a clean, mobile‑first shopping experience:
+- Browse products with filters, sorting, and pagination
+- Create/Update/Delete products from the UI
+- Persistent cart (localStorage), cleared on successful checkout
+- Product detail page and comparison view (exactly two items)
+- Hover actions: Add to cart, Like, Compare, Share
+- Vite static assets via `public/images` for reliable image delivery
 
-Configuration
+## Live URLs
+- Frontend (Netlify): https://furniro4.netlify.app/
+- Backend (Render): https://furnio-he77.onrender.com/
 
-Scripts
+## Features
+- Product CRUD (Create/Read/Update/Delete)
+- Server‑side filters (category/material/brand/price), sort, and paginate
+- Responsive layout across Landing, Shop, Products, About, Contact, Cart, Checkout, Comparison
+- Cart Sidebar with quantity controls and persistence
+- Likes Sidebar with localStorage persistence
+- Product comparison (exactly two items in cart)
+- Modals for Add/Edit product and Delete confirmation
+- SPA routing with Netlify `_redirects` to prevent 404s
 
-API Overview
+## Tech Stack
+- Frontend: React, Vite, Tailwind CSS, Axios, React Router
+- Backend: Node.js, Express, MongoDB (Mongoose)
+- Icons/Utils: Lucide‑react, local helpers
 
-Data Model
+## Architecture
+- API‑first: the frontend consumes REST endpoints for products
+- Context providers for Cart and Likes with localStorage sync
+- Backend controllers handle validation, filtering, sorting, pagination
+- Assets served from `frontend/public/images` to avoid bundler path issues
 
-Seeding Products
+## Quick Start (Local)
 
-Frontend Usage Guide
-
-Troubleshooting
-
-Project Structure
-
-Deployment
-
-🔎 Overview
-
-This project delivers a modern and responsive furniture e-commerce platform with:
-
-Product browsing, filtering, sorting, and pagination
-
-Admin CRUD actions (create, update, delete products from UI)
-
-Shopping cart with persistence (localStorage)
-
-Product comparison (select 2 items)
-
-Responsive pages (Landing, Shop, Products, Cart, Checkout, Comparison, etc.)
-
-🛠 Tech Stack
-
-Frontend
-
-React (with Vite)
-
-Tailwind CSS
-
-Axios
-
-React Router
-
-Backend
-
-Node.js + Express
-
-MongoDB + Mongoose
-
-Tooling
-
-ESLint (Vite defaults)
-
-Lucide icons
-
-JSON seeding helpers
-
-Deployment
-
-Frontend: Netlify
-
-Backend: Render
-
-✨ Features
-
-✅ Product CRUD
-
-✅ Server-side filtering, sorting & pagination
-
-✅ Cart with local persistence
-
-✅ Product comparison (2-item limit)
-
-✅ Responsive design
-
-✅ Static assets served from frontend/public/images
-
-⚡ Quick Start
-Prerequisites
-
-Node.js 18+
-
-MongoDB (local or cloud e.g., Atlas)
+Prerequisites:
+- Node.js 18+
+- MongoDB (local or Atlas connection string)
 
 1) Install dependencies
+```bash
+# from repo root
 cd backend && npm install
 cd ../frontend && npm install
+```
 
 2) Configure environment variables
-
-Backend → backend/.env
-
+Create `backend/.env`:
+```bash
 MONGODB_URI=mongodb://127.0.0.1:27017/furniro
 PORT=3000
-
-
-Frontend → frontend/.env
-
+```
+Create `frontend/.env`:
+```bash
 VITE_API_BASE_URL=http://localhost:3000
+```
 
-3) Start backend & frontend
+3) Run locally (two terminals)
+```bash
 # terminal 1
 cd backend
 npm run dev
@@ -123,50 +92,70 @@ npm run dev
 # terminal 2
 cd frontend
 npm run dev
-
-
-Frontend → http://localhost:5173
-
-Backend → http://localhost:3000
+```
+Frontend: http://localhost:5173  |  Backend: http://localhost:3000
 
 4) (Optional) Seed products
+```bash
 curl -X POST http://localhost:3000/products/seed
+```
 
-⚙️ Configuration (Environment Variables)
-Backend (backend/.env)
+## Configuration (Environment variables)
+Backend (`backend/.env`):
+- `MONGODB_URI` – MongoDB connection string
+- `PORT` – server port (default 3000)
 
-MONGODB_URI → MongoDB connection string
+Frontend (`frontend/.env`):
+- `VITE_API_BASE_URL` – base URL to backend (default http://localhost:3000)
 
-PORT → Port number (default 3000)
+## Scripts
+Backend (from `backend`):
+- `npm run dev` – start with nodemon
+- `npm start` – start production server
 
-Frontend (frontend/.env)
+Frontend (from `frontend`):
+- `npm run dev` – start Vite dev server
+- `npm run build` – production build
+- `npm run preview` – preview built app
 
-VITE_API_BASE_URL → Base URL to backend
+## API Overview + Examples
+Base URL: `${VITE_API_BASE_URL || http://localhost:3000}`
 
-Local: http://localhost:3000
+Products
+- `GET /products` – list with filters
+  - Query: `page, limit, sortBy, sortOrder, brand, category, material, minPrice, maxPrice`
+- `POST /products` – create
+- `PUT /products/:id` – update
+- `DELETE /products/:id` – delete
+- `POST /products/seed` – seed sample furniture
 
-Production: https://furnio-he77.onrender.com
+Example requests (replace base URL for production backend):
+```bash
+# List chairs under ₹5,000 sorted by price desc
+curl "http://localhost:3000/products?category=Chairs&maxPrice=500000&sortBy=price&sortOrder=desc"
 
-📡 API Overview
+# Create a product
+curl -X POST http://localhost:3000/products \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name":"Syltherine Chair",","brand":"Furniro","category":"Chairs","material":"Wood",
+    "price":2500000,"description":"Stylish cafe chair"}'
 
-Base URL → ${VITE_API_BASE_URL}
+# Update a product
+curl -X PUT http://localhost:3000/products/:id \
+  -H "Content-Type: application/json" \
+  -d '{"price":2300000}'
 
-Products API
+# Delete a product
+curl -X DELETE http://localhost:3000/products/:id
 
-GET /products → List with filters/pagination
+# Seed
+curl -X POST http://localhost:3000/products/seed
+```
 
-POST /products → Create
-
-PUT /products/:id → Update
-
-DELETE /products/:id → Delete
-
-POST /products/seed → Seed sample products
-
-🗂 Data Model
-
-backend/models/Product.js
-
+## Data Model
+`backend/models/Product.js`
+```js
 {
   name: String,
   brand: String,
@@ -174,45 +163,71 @@ backend/models/Product.js
   material: String,
   price: Number,
   description: String,
-  image: String,       // optional; static fallback in frontend
+  image: String, // optional; frontend assigns a static image if empty
+  // optional UI fields
   oldPrice: Number,
   discount: Number,
   isNew: Boolean,
   createdAt: Date,
 }
+```
 
-🌱 Seeding Products
+## Seeding Products
+- Run `POST /products/seed` to populate the DB with furniture items matching the UI (Syltherine, Leviosa, Lolito, etc.).
+- Frontend assigns static images from `/public/images` when `image` is missing.
 
-Run:
+## Frontend Usage Guide
+- Shop (`/shop`):
+  - Filter by category/material/brand/price; sort; add/edit/delete products via card actions and modals.
+- Products (`/products`):
+  - Same toolkit as Shop; shares CRUD/filters/pagination.
+- Landing (`/`):
+  - Hero, categories, products grid with hover actions; product details view.
+- Cart:
+  - Persistent between refreshes; clears on checkout; open via header icon.
+- Comparison (`/comparison`):
+  - Add exactly 2 items to cart, then open comparison view.
+- Likes Sidebar:
+  - Like products from cards; view/manage in sidebar.
 
-POST /products/seed
+## Deployment
 
+### Backend (Render)
+- Service: Web Service
+- Root: `backend`
+- Build: `npm install`
+- Start: `npm start`
+- Environment: `MONGODB_URI`, `PORT` (optional)
+- Health check path: `/products`
 
-Populates DB with sample furniture items (Syltherine, Leviosa, Lolito, etc.).
+Live: https://furnio-he77.onrender.com/
 
-🖥 Frontend Usage Guide
+### Frontend (Netlify)
+- Base directory: `frontend`
+- Build command: `npm run build`
+- Publish directory: `frontend/dist`
+- Env vars: `VITE_API_BASE_URL=https://furnio-he77.onrender.com`
+- SPA redirects: create `frontend/public/_redirects` with:
+```
+/* /index.html 200
+```
 
-Shop (/shop) → filter/sort products, CRUD actions
+Live: https://furniro4.netlify.app/
 
-Landing (/) → hero banner, product grid, details
+## Troubleshooting & FAQ
+- Images not visible
+  - Ensure assets exist under `frontend/public/images` and referenced as `/images/...` (spaces/parentheses supported).
+- Background image hidden
+  - Ensure no opaque container overlays; our hero uses an overlay with lower z‑index.
+- CRUD not updating
+  - Confirm backend is running and `VITE_API_BASE_URL` points to it; check browser devtools Network/Console.
+- Empty database
+  - Seed once via `POST /products/seed`.
+- Netlify 404 on refresh
+  - Ensure `_redirects` file is present in `frontend/public`.
 
-Cart → persistent across refresh, clear on checkout
-
-Comparison (/comparison) → requires exactly 2 items
-
-🛠 Troubleshooting
-
-No images → confirm frontend/public/images exists
-
-Background not visible → check z-index/overlays
-
-CRUD not updating → ensure backend running & VITE_API_BASE_URL set correctly
-
-Empty DB → run seeding endpoint once
-
-Cart not persisting → ensure localStorage enabled
-
-📂 Project Structure
+## Project Structure
+```
 backend/
   controllers/
   models/
@@ -229,13 +244,9 @@ frontend/
     pages/
     utils/
     styles/
-    main.jsx
-    App.jsx
+    main.jsx, App.jsx
+```
 
-🚀 Deployment
+---
 
-Frontend (Netlify) → https://furniro4.netlify.app/
-
-Backend (Render) → https://furnio-he77.onrender.com
-
-Both are connected — frontend consumes the Render backend via VITE_API_BASE_URL.
+Maintainers: keep environment secrets in Render/Netlify settings; rotate credentials periodically.
